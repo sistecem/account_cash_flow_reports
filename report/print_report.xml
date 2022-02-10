@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <report
+            id="pdf_report"
+            model="account.wizard"
+            string="Flujo de Caja"
+            report_type="qweb-pdf"
+            name="account_cash_flow_reports.cash_flow_pdf_report"
+            file="account_cash_flow_reports.cash_flow_pdf_report"
+    />
+</odoo>

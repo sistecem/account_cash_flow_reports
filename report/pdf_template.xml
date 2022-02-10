@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="cash_flow_pdf_report">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <style>
+                    #linea_diario{background-color:#c8d2fc;}
+                    #tabla1 {
+                        font-family: Arial, Helvetica, sans-serif;
+                        border-collapse: collapse;
+
+                        width:90%;
+                        margin:2px
+                    }
+
+                    #tabla1 td, #tabla1 th {
+                        border: 1px solid #ddd;
+                        padding: 8px;
+                        height:20px;
+                    }
+                    #tabla1 tr:nth-child(even){ height:20px;background-color: #f2f2f2;}
+                    #tabla1 tr:nth-child(odd){ height:20px;}
+
+                    #tabla1 th {
+                      padding-top: 12px;
+                      padding-bottom: 12px;
+                      text-align: left;
+                      background-color: #243990;
+                      color: white;
+                      height:25px;
+                    }
+                </style>
+                <div class="page">
+
+
+                    <div style="width:90%;margin:1px auto;font-size:12px" class="row mt32 mb32">
+                        <div class="col-2">
+<!--                            <strong>Target Moves:</strong>-->
+<!--                            <p>-->
+<!--                                <span t-if="target_move == 'posted'">Asientos Publicados</span>-->
+<!--                                <span t-if="target_move == 'all'">Todos los asientos</span>-->
+<!--                            </p>-->
+                        </div>
+                        <div class="col-6 text-center">
+                              <h2>
+                                    <strong>ENARCIL S.R.L.</strong>
+                              </h2>
+                            <t t-if="date_from==date_to">
+
+                                <h2>
+                                    <strong>Movimiento diario de Caja</strong>
+                                </h2>
+                                <h4>
+                                De fecha: <span t-esc='date_from'/>
+                                </h4>
+                            </t>
+                            <t t-if="not date_from==date_to">
+                                <h2>
+                                    <strong>Movimiento de Caja</strong>
+                                </h2>
+                                <p>
+                                    <strong>Desde fecha:</strong>
+                                    <span t-esc='date_from'/> -
+
+                                    <strong>Hasta :</strong>
+                                    <span t-esc='date_to'/>
+                                </p>
+                            </t>
+                        </div>
+                        <div class="col-4">
+<!--                            <img t-if="res.company_id.logo" t-att-src="image_data_uri(res.commpany_id.logo)" />-->
+                             <img src='/web/binary/company_logo'  style="max-height: 300px;padding:-200px" alt="Logo"/>
+                        </div>
+                    </div>
+                    <div style="min-height:600px">
+                        <table id="tabla1" class="table table-condensed">
+                        <thead>
+                            <tr style="font-size:13px;padding: 0.25rem !important;">
+<!--                                color:#84da57-->
+                                <th>Fecha</th>
+                                <th>Empresa</th>
+                                <th>Detalle</th>
+                                <th>Diario / Comprobante</th>
+                                <th class="text-right">Debe</th>
+                                <th class="text-right">Haber</th>
+                                <th class="text-right">Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-size:12px" t-foreach="fetched_data" t-as="fetch">
+                            <tr t-if="levels == 'summary'">
+                                <td>
+                                    <span t-esc="fetch.get('month_part')"/>
+                                    <span t-esc="int(fetch.get('year_part'))"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="fetch.get('total_debit')"
+                                          t-options="{'widget': 'monetary',
+                                               'display_currency': res_company.currency_id}"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="fetch.get('total_credit')"
+                                          t-options="{'widget': 'monetary',
+                                               'display_currency': res_company.currency_id}"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="fetch.get('total_balance')"
+                                          t-options="{'widget': 'monetary',
+                                               'display_currency': res_company.currency_id}"/>
+                                </td>
+                            </tr>
+                            <tr style="font-size:13px" t-if="levels == 'consolidated'">
+                                <td>
+                                    <span t-esc="fetch.get('name')"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="fetch.get('total_debit')"
+                                          t-options="{'widget': 'monetary',
+                                               'display_currency': res_company.currency_id}"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="fetch.get('total_credit')"
+                                          t-options="{'widget': 'monetary',
+                                               'display_currency': res_company.currency_id}"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="fetch.get('total_balance')"
+                                          t-options="{'widget': 'monetary',
+                                               'display_currency': res_company.currency_id}"/>
+                                </td>
+                            </tr>
+                        </tbody>
+
+                        <tbody style="font-size:12px" t-if="levels == 'detailed'" t-foreach="journal_res" t-as="res">
+                            <tr t-if="fet.get('name') == res.get('account')" t-foreach="fetched_data" t-as="fet">
+                                <td>
+                                    <strong>
+                                        <span t-esc="fet.get('code')"/>
+                                        <span t-esc="fet.get('name')"/>
+                                    </strong>
+                                </td>
+                                <td class="text-right">
+                                    <strong>
+                                        <span t-esc="fet.get('total_debit')"
+                                              t-options="{'widget': 'monetary',
+                                                  'display_currency': res_company.currency_id}"/>
+                                    </strong>
+                                </td>
+                                <td class="text-right">
+                                    <strong>
+                                        <span t-esc="fet.get('total_credit')"
+                                              t-options="{'widget': 'monetary',
+                                                   'display_currency': res_company.currency_id}"/>
+                                    </strong>
+                                </td>
+                                <td class="text-right">
+                                    <strong>
+                                        <span t-esc="fet.get('total_debit') - fet.get('total_credit')"
+                                              t-options="{'widget': 'monetary',
+                                                   'display_currency': res_company.currency_id}"/>
+                                    </strong>
+                                </td>
+                                <tr t-foreach="res.get('journal_lines')" t-as="mov">
+                                    <td style="padding-left:50px !important" class="text-left">
+                                        <span t-esc="mov['name']"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="mov['total_debit']"
+                                              t-options="{'widget': 'monetary',
+                                               'display_currency': res_company.currency_id}"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="mov['total_credit']"
+                                              t-options="{'widget': 'monetary',
+                                               'display_currency': res_company.currency_id}"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="mov['total_debit'] - mov['total_credit']"
+                                              t-options="{'widget': 'monetary',
+                                               'display_currency': res_company.currency_id}"/>
+                                    </td>
+                                </tr>
+                            </tr>
+                        </tbody>
+
+                        <tbody style="font-size:12px;border:2px;border-color:#addcfc" t-if="levels == 'very'" t-foreach="account_res" t-as="res">
+
+
+                                <tr id="linea_diario" t-if="line['account_name'] == res.get('account')"
+                                    t-foreach="res.get('journal_lines')" t-as="line">
+                                    <td >
+                                        <span t-esc="line['line_date']"/>
+                                    </td>
+                                    <td>
+
+                                    </td>
+                                    <td>
+
+                                    </td>
+                                    <td>
+                                        <span t-esc="line['name']"/>
+                                    </td>
+
+                                    <td class="text-right">
+                                        <span t-esc="line['total_debit']"
+                                              t-options="{'widget': 'monetary',
+                                               'display_currency': res_company.currency_id}"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="line['total_credit']"
+                                              t-options="{'widget': 'monetary',
+                                               'display_currency': res_company.currency_id}"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="line['total_debit'] - line['total_credit']"
+                                              t-options="{'widget': 'monetary',
+                                               'display_currency': res_company.currency_id}"/>
+                                    </td>
+                                    <tr t-if="mov['name'] == line['name'] and mov['line_date'] == line['line_date']" t-foreach="res.get('move_lines')"
+                                        t-as="mov">
+
+                                        <td>
+                                            <span t-esc="mov['line_date']"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="mov['line_partner']"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="mov['line_ref']"/>
+                                        </td>
+<!--                                         <td style="padding-left:50px !important" class="text-left">-->
+                                        <td>
+                                            <span t-esc="mov['move_name']"/>
+                                        </td>
+
+                                        <td class="text-right">
+                                            <span t-esc="mov['total_debit']"
+                                                  t-options="{'widget': 'monetary',
+                                               'display_currency': res_company.currency_id}"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="mov['total_credit']"
+                                                  t-options="{'widget': 'monetary',
+                                               'display_currency': res_company.currency_id}"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="mov['total_debit'] - mov['total_credit']"
+                                                  t-options="{'widget': 'monetary',
+                                               'display_currency': res_company.currency_id}"/>
+                                        </td>
+                                    </tr>
+                                </tr>
+<!--                            </tr>-->
+                        </tbody>
+                    </table>
+                       <div class="row">
+                        <br/>
+                            <div class="col-3 text-center"></div>
+                            <div class="col-6 text-center">
+                                <br/><br/>
+                                <span>Total Efectivo disponible</span><br/>
+                                <table id="tabla2" class="table table-condensed">
+                                    <tbody  t-foreach="balance_res" t-as="res">
+    <!--                                <tbody  t-foreach="account_res" t-as="res">-->
+                                        <tr  t-foreach="res.get('account_balance')" t-as="balance">
+    <!--                                        <tr  t-if="balance['account_name'] == res.get('account')"-->
+    <!--                                             t-foreach="balance_res.get('account_balance')" t-as="balance">-->
+                                                <td>
+                                                    <span t-esc="balance['account_name']"/>
+                                                </td>
+                                                <td>
+                                                    <span t-esc="balance['account_balance']"/>
+                                                </td>
+    <!--                                        </tr>-->
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <div class="row" id="firmas">
+                   <div class="col-6 text-center">
+                      <strong>_____________________________________</strong>
+                      <br/>Elaborado por:
+                      <br/><span t-esc="current_user"/>
+                       <span t-esc="user.name"/>
+                   </div>
+                   <div class="col-6 text-center">
+                      <strong>_____________________________________</strong>
+                      <br/>Revisado por:
+                      <br/>Martin K. Steiger:
+                   </div>
+
+
+                    </div>
+                    <div class="row text-center" id="Fecha">
+                        <div class="col-12 text-center" >
+                        Santa Cruz <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d de %B - %Y')"/>
+                        </div>
+                    </div>
+
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>
