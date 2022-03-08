@@ -33,7 +33,7 @@ class AccountWizard(models.TransientModel):
         logged_users = self.env['res.company']._company_default_get('account.account')
         if self.date_from:
             if self.date_from > self.date_to:
-                raise UserError("Start date should be less than end date")
+                raise UserError("La 'Fecha desde' debería ser menor que la 'Fecha hasta'")
         data = {
             'ids': self.ids,
             'model': self._name,

@@ -15,8 +15,8 @@ class ReportAccountWizard(models.AbstractModel):
         balance_res = []
         fetched = []
         account_type_id = self.env.ref('account.data_account_type_liquidity').id
-        self.model = self.env.context.get('active_model')
-        docs = self.env[self.model].browse(self.env.context.get('active_id'))
+        active_model = self.env.context.get('active_model')
+        docs = self.env[self.env.context.get('active_model')].browse(self.env.context.get('active_id'))
         if data['levels'] == 'summary':
             state = """ WHERE am.state = 'posted' """ if data['target_move'] == 'posted' else ''
             query3 = """SELECT to_char(am.date, 'Month') as month_part, extract(YEAR from am.date) as year_part,
@@ -102,7 +102,7 @@ class ReportAccountWizard(models.AbstractModel):
             'date_to': data['date_to'],
             'levels': data['levels'],
             'doc_ids': self.ids,
-            'doc_model': self.model,
+            'doc_model': active_model,
             'docs': docs,
             'fetched_data': fetched_data,
             'account_res': account_res,
