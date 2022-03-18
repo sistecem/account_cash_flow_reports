@@ -15,7 +15,7 @@ class AccountWizard(models.TransientModel):
 
     current_user = fields.Many2one('res.users', 'Current User', default=lambda self: self.env.user)
     date_from = fields.Date(string="Fecha desde", default=fields.Date.today,required=True)
-    date_to = fields.Date(string="Fecha hasta", default=fields.Date.today, required=True)
+    date_to = fields.Date(string="Fecha hasta", default=fields.Date.today,readonly=False,required=True)
     today = fields.Date("Fecha del Reporte", default=fields.Date.today)
     levels = fields.Selection([('summary', 'Resumen'),
                                ('consolidated', 'Consolidado'),
@@ -26,7 +26,11 @@ class AccountWizard(models.TransientModel):
                                    'Summary: Month wise report.\n'
                                    'Consolidated: Based on account types.\n'
                                    'Detailed: Based on accounts.\n'
-                                   'Very Detailed: Accounts with their move lines')
+                                  'Very Detailed: Accounts with their move lines')
+
+    @api.onchange('date_from')
+    def _compute_date_to(self):
+        self.date_to = self.date_from
 
     def generate_pdf_report(self):
         self.ensure_one()

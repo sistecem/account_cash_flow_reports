@@ -13,7 +13,7 @@
     'maintainer': 'Sistecem',
     'website': "https://www.sistecem.com",
     'category': 'Accounting',
-    'depends': ['base', 'account'],
+    'depends': ['base', 'account','hr'],
     'data': ['security/ir.model.access.csv',
              'wizard/account_wizard.xml',
              'views/action_manager.xml',
