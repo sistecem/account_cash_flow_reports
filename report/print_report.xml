@@ -3,7 +3,7 @@
     <report
             id="pdf_report"
             model="account.wizard"
-            string="Flujo de Caja"
+            string="Reportes Flujo de Caja"
             report_type="qweb-pdf"
             name="account_cash_flow_reports.cash_flow_pdf_report"
             file="account_cash_flow_reports.cash_flow_pdf_report"
