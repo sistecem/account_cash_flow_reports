@@ -9,8 +9,8 @@
 
                         border-collapse: collapse;
 
-                        width:90%;
-                        margin:2px
+                        width:100%;
+                        margin:1px
                     }
 
                     #tabla1 td, #tabla1 th {
@@ -32,8 +32,8 @@
                 </style>
                 <div width="100%" class="page" style="width:100%">
                     <t t-set="has_values" t-value="False"/>
-                    <div style="width:100%;margin:2px;font-size:12px;padding-top:50px" class="row">
-                        <div class="col-1">
+                    <div style="width:100%;margin:1px;font-size:12px;padding-top:50px" class="row">
+                        <div class="col-2">
 <!--                            <strong>Target Moves:</strong>-->
 <!--                            <p>-->
 <!--                                <span t-if="target_move == 'posted'">Asientos Publicados</span>-->
@@ -66,7 +66,7 @@
                                 </p>
                             </t>
                         </div>
-                        <div class="col-3 text-left">
+                        <div class="col-4 text-left">
 <!--                            <img t-if="res.company_id.logo" t-att-src="image_data_uri(res.commpany_id.logo)" />-->
                              <img src='/web/binary/company_logo'  style="max-height: 300px;padding:-200px" alt="Logo"/>
                         </div>
