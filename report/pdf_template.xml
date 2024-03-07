@@ -76,13 +76,13 @@
                         <thead>
                             <tr style="font-size:13px;padding: 0.25rem !important;">
 <!--                                color:#84da57-->
-                                <th width="10%">Fecha</th>
-                                <th width="15%">Empresa</th>
-                                <th width="20%">Detalle</th>
-                                <th width="19%">Diario / Comprobante</th>
-                                <th width="11%" class="text-right">Debe</th>
-                                <th width="11%" class="text-right">Haber</th>
-                                <th width="14%" class="text-right">Balance</th>
+                                <th width="13%">Fecha</th>
+                                <th width="31%">Empresa</th>
+                                <th width="31%">Detalle</th>
+                                <th width="10%">Diario / Comprobante</th>
+                                <th class="text-right">Debe</th>
+                                <th class="text-right">Haber</th>
+                                <th class="text-right">Balance</th>
                             </tr>
                         </thead>
 <!--                        <tbody style="font-size:12px" t-foreach="fetched_data" t-as="fetch">-->
