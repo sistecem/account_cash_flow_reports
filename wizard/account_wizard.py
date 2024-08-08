@@ -27,6 +27,12 @@ class AccountWizard(models.TransientModel):
                                    'Consolidated: Based on account types.\n'
                                    'Detailed: Based on accounts.\n'
                                   'Very Detailed: Accounts with their move lines')
+    company_id = fields.Many2one(
+        comodel_name="res.company",
+        default=lambda self: self.env.company.id,
+        required=True,
+        string="Compañía",
+    )
 
     @api.onchange('date_from')
     def _compute_date_to(self):
@@ -43,6 +49,8 @@ class AccountWizard(models.TransientModel):
             'model': self._name,
             'date_from': self.date_from,
             'date_to': self.date_to,
+            'company_id': str(self.company_id.id),
+            'company_name': str(self.company_id.name),
             'levels': self.levels,
             'target_move': self.target_move,
             'today': self.today,

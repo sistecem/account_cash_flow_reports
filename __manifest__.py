@@ -5,7 +5,7 @@
 
 {
     'name': 'Advanced Cash Flow Reports',
-    'version': '14.0.1.0.0',
+    'version': '14.0.1.0.1',
     'summary': """Generate cash flow reports in PDF and Excel""",
     'description': """Generate cash flow statement reports in PDF and Excel""",
     'author': "Sistecem",

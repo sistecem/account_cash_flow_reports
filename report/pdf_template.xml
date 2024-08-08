@@ -42,7 +42,7 @@
                         </div>
                         <div class="col-6 text-center">
                               <h2>
-                                    <strong>ENARCIL S.R.L.</strong>
+                                    <strong><span t-esc='company_name'/></strong>
                               </h2>
                             <t t-if="date_from==date_to">
 
@@ -67,8 +67,9 @@
                             </t>
                         </div>
                         <div class="col-4 text-left">
-<!--                            <img t-if="res.company_id.logo" t-att-src="image_data_uri(res.commpany_id.logo)" />-->
-                             <img src='/web/binary/company_logo'  style="max-height: 300px;padding:-200px" alt="Logo"/>
+                            <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)"
+                                style="max-height: 300px;max-width: 300px;padding:-200px" alt="Logo"/>
+<!--                             <img src='/web/binary/company_logo'  style="max-height: 300px;padding:-200px" alt="Logo"/>-->
                         </div>
                     </div>
                     <div class="row" width="100%" style="width:100%;margin-top:15px;min-height:200px">
@@ -343,7 +344,7 @@
                     </div>
                     <div class="row text-center" id="Fecha" style="margin-top:25px">
                         <div class="col-10 text-center" >
-                        Santa Cruz <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d de %B - %Y')"/>
+                        Santa Cruz <span t-esc="context_timestamp(datetime.datetime.now()).strftime(' %d de %B - %Y ')"/>
                         </div>
                     </div>
 
