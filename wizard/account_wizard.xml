@@ -14,10 +14,10 @@
 
                 </group>
 
-                <group col="4">
-                    <group>
+                <group col="2">
+
                      <field name="company_id" options="{'no_create': True}"/>
-                    </group>
+
                     <!--                    <field name="levels"/>-->
                 </group>
 

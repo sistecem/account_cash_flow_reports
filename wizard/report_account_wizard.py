@@ -170,7 +170,7 @@ class ReportAccountWizard(models.AbstractModel):
              LEFT JOIN account_move_line aml ON aml.move_id = am.id
              LEFT JOIN account_account aa ON aa.id = aml.account_id
              LEFT JOIN account_account_type aat ON aat.id = aa.user_type_id
-             WHERE am.date BETWEEN '""" + str(data['date_from']) + """' and '""" + str(
+             WHERE am.company_id ="""+company+""" AND am.date BETWEEN '""" + str(data['date_from']) + """' and '""" + str(
             data['date_to']) + """' AND aat.id='""" + str(account_type_id) + """' """ + state + """) am
                                  LEFT JOIN account_move_line aml ON aml.move_id = am.id
                                  LEFT JOIN account_account aa ON aa.id = aml.account_id

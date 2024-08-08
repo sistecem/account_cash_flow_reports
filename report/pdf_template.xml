@@ -40,6 +40,8 @@
 <!--                                <span t-if="target_move == 'all'">Todos los asientos</span>-->
 <!--                            </p>-->
                         </div>
+
+
                         <div class="col-4 text-center">
                               <h2>
                                     <strong><span t-esc='company_name'/></strong>
