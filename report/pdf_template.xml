@@ -73,10 +73,12 @@
                             </t>
                         </div>
                         <div class="col-4 text-left">
-                            <t t-if="logo">
-                                <img t-att-src="'data:image/png;base64,' + logo"
-                                    style="max-height: 250px; max-width: 250px;" alt="Logo"/>
-                            </t>
+<!--                            <t t-if="logo">-->
+<!--                                <img t-att-src="'data:image/png;base64,' + logo"-->
+<!--                                    style="max-height: 250px; max-width: 250px;" alt="Logo"/>-->
+<!--                            </t>-->
+                              <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)"
+                                style="max-height: 300px;max-width: 300px;padding:-200px" alt="Logo"/>
 <!--                            <img t-if="logo" t-att-src="logo"-->
 <!--                                 style="max-height: 250px;max-width: 250px;padding:-200px" alt="Logo"/>-->
 <!--                                             <img src='/web/binary/company_logo'  style="max-height: 300px;padding:-200px" alt="Logo"/>-->
