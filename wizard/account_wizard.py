@@ -58,7 +58,7 @@ class AccountWizard(models.TransientModel):
             'today': self.today,
             'logged_users': logged_users.name,
         }
-        print(data['logo'])
+        # print(data['logo'])
 
         return self.env.ref('account_cash_flow_reports.pdf_report').report_action(self, data=data)
 

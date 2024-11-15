@@ -42,7 +42,7 @@
                         </div>
 
 
-                        <div class="col-4 text-center">
+                        <div class="col-6 text-center">
                             <h2>
                                 <strong>
                                     <span t-esc='company_name'/>
@@ -50,9 +50,9 @@
                             </h2>
                             <t t-if="date_from==date_to">
 
-                                <h2>
+                                <h3>
                                     <strong>Movimiento diario de Caja</strong>
-                                </h2>
+                                </h3>
                                 <h4>
                                     De fecha:
                                     <span t-esc='date_from'/>
@@ -78,7 +78,7 @@
 <!--                                    style="max-height: 250px; max-width: 250px;" alt="Logo"/>-->
 <!--                            </t>-->
                               <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)"
-                                style="max-height: 300px;max-width: 300px;padding:-200px" alt="Logo"/>
+                                style="max-height: 150px;max-width: 250px;padding:-200px" alt="Logo"/>
 <!--                            <img t-if="logo" t-att-src="logo"-->
 <!--                                 style="max-height: 250px;max-width: 250px;padding:-200px" alt="Logo"/>-->
 <!--                                             <img src='/web/binary/company_logo'  style="max-height: 300px;padding:-200px" alt="Logo"/>-->
