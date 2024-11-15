@@ -2,6 +2,9 @@
 #############################################################################
 
 from odoo import models, api
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class ReportAccountWizard(models.AbstractModel):
@@ -93,8 +96,8 @@ class ReportAccountWizard(models.AbstractModel):
             cr = self._cr
             cr.execute(sql)
             fetched = cr.dictfetchall()
-            for account in self.env['account.account'].search([('company_id','=',int(company)),
-                                                                ('id', '=', int(account_ids))]):
+            for account in self.env['account.account'].search([('company_id', '=', int(company)),
+                                                               ('id', '=', int(account_ids))]):
                 print(str(account_ids))
                 child_lines = self._get_lines(account, data)
                 balance_lines = self._get_account_balance(account, data)
@@ -136,7 +139,8 @@ class ReportAccountWizard(models.AbstractModel):
                             LEFT JOIN account_account_type aat ON aat.id = aa.user_type_id
                             LEFT JOIN account_journal aj ON aj.id = am.journal_id
                             LEFT JOIN res_partner par ON par.id = am.partner_id
-                            WHERE aa.id = """ + str(account.id) + """ and aj.type = 'cash' """ + """and  am.date BETWEEN '""" + str(
+                            WHERE aa.id = """ + str(
+            account.id) + """ and aj.type = 'cash' """ + """and  am.date BETWEEN '""" + str(
             data['date_from']) + """' and '""" + str(
             data['date_to']) + """' AND aat.id='""" + str(account_type_id) + """' """ + state + """ 
                              GROUP BY am.date,am.name, aml.account_id, aj.name,par.name,am.ref"""
@@ -209,7 +213,8 @@ class ReportAccountWizard(models.AbstractModel):
         aa.id = """ + str(account.id) + """ AND am.date <= '""" + str(data['date_to']) + """' AND 
         aat.id=""" + str(account_type_id) + state + """ AND aj.type = 'cash'  
         GROUP BY aa.name"""
-        print(sql2)
+
+        _logger.info(sql2)
         cr = self._cr
         cr.execute(sql2)
         fetched_data = cr.dictfetchall()
