@@ -3,6 +3,7 @@
 
 import json
 from datetime import datetime
+import base64
 
 from odoo import models, fields, api
 from odoo.exceptions import UserError
@@ -49,6 +50,7 @@ class AccountWizard(models.TransientModel):
             'model': self._name,
             'date_from': self.date_from,
             'date_to': self.date_to,
+            'logo': base64.b64encode(self.company_id.logo).decode('utf-8') if self.company_id.logo else None,
             'company_id': str(self.company_id.id),
             'company_name': str(self.company_id.name),
             'levels': self.levels,
@@ -56,6 +58,7 @@ class AccountWizard(models.TransientModel):
             'today': self.today,
             'logged_users': logged_users.name,
         }
+        print(data['logo'])
 
         return self.env.ref('account_cash_flow_reports.pdf_report').report_action(self, data=data)
 

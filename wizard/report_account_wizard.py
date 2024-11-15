@@ -16,7 +16,7 @@ class ReportAccountWizard(models.AbstractModel):
         fetched = []
         account_type_id = self.env.ref('account.data_account_type_liquidity').id
         company = data['company_id']
-        # self.model = report.account_cash_flow_reports.cash_flow_pdf_report #self.env.context.get('active_model')
+        # self.model = report.account_cash_flow_reports.cash_flow_pdf_report #self.env.context.get('activ_model')
         # docs = self.env[self.model].browse(self.env.context.get('active_id'))
         docs = []
         if data['levels'] == 'summary':
@@ -36,44 +36,43 @@ class ReportAccountWizard(models.AbstractModel):
             cr = self._cr
             cr.execute(query3)
             fetched_data = cr.dictfetchall()
-
-        elif data['levels'] == 'consolidated':
-            state = """ WHERE am.state = 'posted' """ if data['target_move'] == 'posted' else ''
-            query2 = """SELECT aat.name, sum(aml.debit) AS total_debit, sum(aml.credit) AS total_credit,
-             sum(aml.balance) AS total_balance FROM (  SELECT am.id, am.state FROM account_move as am
-             LEFT JOIN account_move_line aml ON aml.move_id = am.id
-             LEFT JOIN account_account aa ON aa.id = aml.account_id
-             LEFT JOIN account_account_type aat ON aat.id = aa.user_type_id
-             WHERE am.date BETWEEN '""" + str(data['date_from']) + """' and '""" + str(
-                data['date_to']) + """' AND aat.id='""" + str(account_type_id) + """' ) am
-                         LEFT JOIN account_move_line aml ON aml.move_id = am.id
-                         LEFT JOIN account_account aa ON aa.id = aml.account_id
-                         LEFT JOIN account_account_type aat ON aat.id = aa.user_type_id
-                         """ + state + """GROUP BY aat.name"""
-            cr = self._cr
-            cr.execute(query2)
-            fetched_data = cr.dictfetchall()
-        elif data['levels'] == 'detailed':
-            state = """ WHERE am.state = 'posted' """ if data['target_move'] == 'posted' else ''
-            query1 = """SELECT aa.name,aa.code, sum(aml.debit) AS total_debit, sum(aml.credit) AS total_credit,
-             sum(aml.balance) AS total_balance FROM (SELECT am.id, am.state FROM account_move as am
-             LEFT JOIN account_move_line aml ON aml.move_id = am.id
-             LEFT JOIN account_account aa ON aa.id = aml.account_id
-             LEFT JOIN account_account_type aat ON aat.id = aa.user_type_id
-             WHERE am.date BETWEEN '""" + str(data['date_from']) + """' and '""" + str(
-                data['date_to']) + """' AND aat.id='""" + str(account_type_id) + """' ) am
-                         LEFT JOIN account_move_line aml ON aml.move_id = am.id
-                         LEFT JOIN account_account aa ON aa.id = aml.account_id
-                         LEFT JOIN account_account_type aat ON aat.id = aa.user_type_id
-                         """ + state + """GROUP BY aa.name, aa.code"""
-            cr = self._cr
-            cr.execute(query1)
-            fetched_data = cr.dictfetchall()
-            for account in self.env['account.account'].search([]):
-                child_lines = self._get_journal_lines(account, data)
-                if child_lines:
-                    journal_res.append(child_lines)
-
+        #
+        # elif data['levels'] == 'consolidated':
+        #     state = """ WHERE am.state = 'posted' """ if data['target_move'] == 'posted' else ''
+        #     query2 = """SELECT aat.name, sum(aml.debit) AS total_debit, sum(aml.credit) AS total_credit,
+        #      sum(aml.balance) AS total_balance FROM (  SELECT am.id, am.state FROM account_move as am
+        #      LEFT JOIN account_move_line aml ON aml.move_id = am.id
+        #      LEFT JOIN account_account aa ON aa.id = aml.account_id
+        #      LEFT JOIN account_account_type aat ON aat.id = aa.user_type_id
+        #      WHERE am.date BETWEEN '""" + str(data['date_from']) + """' and '""" + str(
+        #         data['date_to']) + """' AND aat.id='""" + str(account_type_id) + """' ) am
+        #                  LEFT JOIN account_move_line aml ON aml.move_id = am.id
+        #                  LEFT JOIN account_account aa ON aa.id = aml.account_id
+        #                  LEFT JOIN account_account_type aat ON aat.id = aa.user_type_id
+        #                  """ + state + """GROUP BY aat.name"""
+        #     cr = self._cr
+        #     cr.execute(query2)
+        #     fetched_data = cr.dictfetchall()
+        # elif data['levels'] == 'detailed':
+        #     state = """ WHERE am.state = 'posted' """ if data['target_move'] == 'posted' else ''
+        #     query1 = """SELECT aa.name,aa.code, sum(aml.debit) AS total_debit, sum(aml.credit) AS total_credit,
+        #      sum(aml.balance) AS total_balance FROM (SELECT am.id, am.state FROM account_move as am
+        #      LEFT JOIN account_move_line aml ON aml.move_id = am.id
+        #      LEFT JOIN account_account aa ON aa.id = aml.account_id
+        #      LEFT JOIN account_account_type aat ON aat.id = aa.user_type_id
+        #      WHERE am.date BETWEEN '""" + str(data['date_from']) + """' and '""" + str(
+        #         data['date_to']) + """' AND aat.id='""" + str(account_type_id) + """' ) am
+        #                  LEFT JOIN account_move_line aml ON aml.move_id = am.id
+        #                  LEFT JOIN account_account aa ON aa.id = aml.account_id
+        #                  LEFT JOIN account_account_type aat ON aat.id = aa.user_type_id
+        #                  """ + state + """GROUP BY aa.name, aa.code"""
+        #     cr = self._cr
+        #     cr.execute(query1)
+        #     fetched_data = cr.dictfetchall()
+        #     for account in self.env['account.account'].search([]):
+        #         child_lines = self._get_journal_lines(account, data)
+        #         if child_lines:
+        #             journal_res.append(child_lines)
 
         else:
             account_type_id = self.env.ref('account.data_account_type_liquidity').id
@@ -83,16 +82,17 @@ class ReportAccountWizard(models.AbstractModel):
                          LEFT JOIN account_move_line aml ON aml.move_id = am.id
                          LEFT JOIN account_account aa ON aa.id = aml.account_id
                          LEFT JOIN account_account_type aat ON aat.id = aa.user_type_id
-                         WHERE am.company_id = """+ company +""" AND am.date BETWEEN '""" + str(data['date_from']) + """' and '""" + str(
+                         WHERE am.company_id = """ + company + """ AND am.date BETWEEN '""" + str(
+                data['date_from']) + """' and '""" + str(
                 data['date_to']) + """' AND aat.id='""" + str(account_type_id) + """' """ + state + """) am
-                                             LEFT JOIN account_move_line aml ON aml.move_id = am.id
-                                             LEFT JOIN account_account aa ON aa.id = aml.account_id
-                                             LEFT JOIN account_account_type aat ON aat.id = aa.user_type_id
-                                             GROUP BY aa.name, aa.code"""
+                                     LEFT JOIN account_move_line aml ON aml.move_id = am.id
+                                     LEFT JOIN account_account aa ON aa.id = aml.account_id
+                                     LEFT JOIN account_account_type aat ON aat.id = aa.user_type_id
+                                     GROUP BY aa.name, aa.code"""
             cr = self._cr
             cr.execute(sql)
             fetched = cr.dictfetchall()
-            for account in self.env['account.account'].search([]):
+            for account in self.env['account.account'].search([('company_id','=',int(company))]):
                 child_lines = self._get_lines(account, data)
                 balance_lines = self._get_account_balance(account, data)
                 if child_lines:
@@ -118,19 +118,25 @@ class ReportAccountWizard(models.AbstractModel):
 
         state = """AND am.state = 'posted' """ if data['target_move'] == 'posted' else ''
 
-        query = """SELECT am.date AS line_date, aml.account_id,aj.name, am.name as move_name, am.ref as line_ref,par.name AS line_partner,sum(aml.debit) AS total_debit,
-                                       sum(aml.credit) AS total_credit FROM  account_move as am
-                                       LEFT JOIN account_move_line aml ON aml.move_id = am.id
-                                       LEFT JOIN account_account aa ON aa.id = aml.account_id
-                                       LEFT JOIN account_account_type aat ON aat.id = aa.user_type_id
-                                       LEFT JOIN account_journal aj ON aj.id = am.journal_id
-                                       LEFT JOIN res_partner par ON par.id = am.partner_id
-                                       WHERE aa.id = """ + \
-                str(account.id) + """ and aj.type = 'cash' """ + """and  am.date BETWEEN '""" + str(data['date_from']) + """' and '""" + str(
+        query = """SELECT 
+                            am.date AS line_date, 
+                            aml.account_id,
+                            aj.name, 
+                            am.name as move_name, 
+                            am.ref as line_ref,
+                            par.name AS line_partner,
+                            SUM(COALESCE(aml.debit, 0)) AS total_debit,
+                            SUM(COALESCE(aml.credit, 0)) AS total_credit 
+                            FROM  account_move as am
+                            JOIN account_move_line aml ON aml.move_id = am.id
+                            LEFT JOIN account_account aa ON aa.id = aml.account_id
+                            LEFT JOIN account_account_type aat ON aat.id = aa.user_type_id
+                            LEFT JOIN account_journal aj ON aj.id = am.journal_id
+                            LEFT JOIN res_partner par ON par.id = am.partner_id
+                            WHERE aa.id = """ + str(account.id) + """ and aj.type = 'cash' """ + """and  am.date BETWEEN '""" + str(
+            data['date_from']) + """' and '""" + str(
             data['date_to']) + """' AND aat.id='""" + str(account_type_id) + """' """ + state + """ 
-
-
-                                       GROUP BY am.date,am.name, aml.account_id, aj.name,par.name,am.ref"""
+                             GROUP BY am.date,am.name, aml.account_id, aj.name,par.name,am.ref"""
 
         cr = self._cr
         cr.execute(query)
@@ -170,7 +176,8 @@ class ReportAccountWizard(models.AbstractModel):
              LEFT JOIN account_move_line aml ON aml.move_id = am.id
              LEFT JOIN account_account aa ON aa.id = aml.account_id
              LEFT JOIN account_account_type aat ON aat.id = aa.user_type_id
-             WHERE am.company_id ="""+company+""" AND am.date BETWEEN '""" + str(data['date_from']) + """' and '""" + str(
+             WHERE am.company_id =""" + company + """ AND am.date BETWEEN '""" + str(
+            data['date_from']) + """' and '""" + str(
             data['date_to']) + """' AND aat.id='""" + str(account_type_id) + """' """ + state + """) am
                                  LEFT JOIN account_move_line aml ON aml.move_id = am.id
                                  LEFT JOIN account_account aa ON aa.id = aml.account_id
@@ -187,7 +194,7 @@ class ReportAccountWizard(models.AbstractModel):
                 'journal_lines': fetched_data,
             }
 
-    def _get_account_balance(self,account, data):
+    def _get_account_balance(self, account, data):
         account_type_id = self.env.ref('account.data_account_type_liquidity').id
         state = """AND am.state = 'posted' """ if data['target_move'] == 'posted' else ''
         sql2 = """SELECT aa.name as account_name, sum(aml.debit) - sum(aml.credit) AS account_balance FROM account_move as am 
@@ -197,7 +204,7 @@ class ReportAccountWizard(models.AbstractModel):
         LEFT JOIN account_journal aj ON aj.id = am.journal_id 
         WHERE 
         aa.id = """ + str(account.id) + """ AND am.date <= '""" + str(data['date_to']) + """' AND 
-        aat.id=""" + str(account_type_id) + state +""" AND aj.type = 'cash'  
+        aat.id=""" + str(account_type_id) + state + """ AND aj.type = 'cash'  
         GROUP BY aa.name"""
 
         cr = self._cr
@@ -208,4 +215,3 @@ class ReportAccountWizard(models.AbstractModel):
                 'account': account.name,
                 'account_balance': fetched_data,
             }
-
