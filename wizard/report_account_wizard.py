@@ -211,7 +211,7 @@ class ReportAccountWizard(models.AbstractModel):
         LEFT JOIN account_journal aj ON aj.id = am.journal_id 
         WHERE 
         aa.id = """ + str(account.id) + """ AND am.date <= '""" + str(data['date_to']) + """' AND 
-        aat.id=""" + str(account_type_id) + state + """ AND aj.type = 'cash'  
+        aat.id=""" + str(account_type_id) + state + """  
         GROUP BY aa.name"""
 
         _logger.info(sql2)
