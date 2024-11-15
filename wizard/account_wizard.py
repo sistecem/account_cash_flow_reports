@@ -14,6 +14,10 @@ class AccountWizard(models.TransientModel):
     _name = "account.wizard"
     _inherit = "account.common.report"
 
+    account_id = fields.Many2one('account.account', 'Cuenta', domain=[
+        ('user_type_id.type', 'in', ['liquidity']),
+
+    ])
     current_user = fields.Many2one('res.users', 'Current User', default=lambda self: self.env.user)
     date_from = fields.Date(string="Fecha desde", default=fields.Date.today,required=True)
     date_to = fields.Date(string="Fecha hasta", default=fields.Date.today,readonly=False,required=True)
@@ -52,6 +56,7 @@ class AccountWizard(models.TransientModel):
             'date_to': self.date_to,
             'logo': base64.b64encode(self.company_id.logo).decode('utf-8') if self.company_id.logo else None,
             'company_id': str(self.company_id.id),
+            'account_id': str(self.account_id.id),
             'company_name': str(self.company_id.name),
             'levels': self.levels,
             'target_move': self.target_move,

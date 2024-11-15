@@ -15,6 +15,7 @@ class ReportAccountWizard(models.AbstractModel):
         balance_res = []
         fetched = []
         account_type_id = self.env.ref('account.data_account_type_liquidity').id
+        account_ids = data['account_id']
         company = data['company_id']
         # self.model = report.account_cash_flow_reports.cash_flow_pdf_report #self.env.context.get('activ_model')
         # docs = self.env[self.model].browse(self.env.context.get('active_id'))
@@ -76,7 +77,7 @@ class ReportAccountWizard(models.AbstractModel):
 
         else:
             account_type_id = self.env.ref('account.data_account_type_liquidity').id
-            state = """AND am.state = 'posted' """ if data['target_move'] == 'posted' else ''
+            state = """AND am.state = 'posted' """
             sql = """SELECT DISTINCT aa.name,aa.code, sum(aml.debit) AS total_debit,
                          sum(aml.credit) AS total_credit FROM (SELECT am.* FROM account_move as am
                          LEFT JOIN account_move_line aml ON aml.move_id = am.id
@@ -92,7 +93,9 @@ class ReportAccountWizard(models.AbstractModel):
             cr = self._cr
             cr.execute(sql)
             fetched = cr.dictfetchall()
-            for account in self.env['account.account'].search([('company_id','=',int(company))]):
+            for account in self.env['account.account'].search([('company_id','=',int(company)),
+                                                                ('id', '=', int(account_ids))]):
+                print(str(account_ids))
                 child_lines = self._get_lines(account, data)
                 balance_lines = self._get_account_balance(account, data)
                 if child_lines:
@@ -196,7 +199,7 @@ class ReportAccountWizard(models.AbstractModel):
 
     def _get_account_balance(self, account, data):
         account_type_id = self.env.ref('account.data_account_type_liquidity').id
-        state = """AND am.state = 'posted' """ if data['target_move'] == 'posted' else ''
+        state = """ AND am.state = 'posted' """ if data['target_move'] == 'posted' else ''
         sql2 = """SELECT aa.name as account_name, sum(aml.debit) - sum(aml.credit) AS account_balance FROM account_move as am 
         LEFT JOIN account_move_line aml ON aml.move_id = am.id
         LEFT JOIN account_account aa ON aa.id = aml.account_id
@@ -206,7 +209,7 @@ class ReportAccountWizard(models.AbstractModel):
         aa.id = """ + str(account.id) + """ AND am.date <= '""" + str(data['date_to']) + """' AND 
         aat.id=""" + str(account_type_id) + state + """ AND aj.type = 'cash'  
         GROUP BY aa.name"""
-
+        print(sql2)
         cr = self._cr
         cr.execute(sql2)
         fetched_data = cr.dictfetchall()
